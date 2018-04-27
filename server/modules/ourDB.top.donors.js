@@ -30,7 +30,7 @@ async function getTopDonors (nonprofitId, res) {
             subscriptionTopGivers = response.rows;
         })
         .catch(err => {
-            console.log('ERR in sidSqlText POOL.QUERY >>>>>>>>>>>>', err);
+            console.log('ERR in sidSqlText POOL.QUERY', err);
             res.sendStatus(500);
         });
 

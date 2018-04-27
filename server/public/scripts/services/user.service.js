@@ -1,5 +1,6 @@
 myApp.service('UserService', ['$http', '$location', '$window', '$route', '$mdDialog', '$timeout', function($http, $location, $window, $route, $mdDialog, $timeout) {
   let self = this;
+  let debug = false;
 
   self.userArray = {};
   self.callbackResponse = '';
@@ -18,9 +19,9 @@ myApp.service('UserService', ['$http', '$location', '$window', '$route', '$mdDia
   };
 
   self.getInitialLocation = function(){
-    console.log('UserService -- getuser', self.userObject);
+    if(debug){console.log('UserService -- getuser', self.userObject);};
     $http.get('/auth').then(function(response) {
-      console.log(response, 'response in getUser');
+      if(debug){console.log(response, 'response in getUser');};
         if(response.data.name) {
             if(response.data.role === 1) {
               $location.path("/admin-feed");
@@ -28,20 +29,20 @@ myApp.service('UserService', ['$http', '$location', '$window', '$route', '$mdDia
               $location.path("/feed");
             }
         } else {
-            console.log('UserService -- getuser -- failure');
+            if(debug){console.log('UserService -- getuser -- failure');};
         }
     },function(response){
-      console.log('UserService -- getuser -- failure: ', response);
+      if(debug){console.log('UserService -- getuser -- failure: ', response);};
     });
   }
 
   self.getUser = function(){
-    console.log('UserService -- getuser');
-    console.log(self.userObject, 'userobj in get user');
+    if(debug){console.log('UserService -- getuser');};
+    if(debug){console.log(self.userObject, 'userobj in get user');}:
     self.currentPath = $location.path();
     $window.scrollTo(0, 0);
     $http.get('/auth').then(function(response) {
-      console.log(response, 'response in getUser');
+      if(debug){console.log(response, 'response in getUser');};
         if(response.data.name) {
             // user has a curret session on the server
             self.userObject.fromOurDB.name = response.data.name;
@@ -51,30 +52,30 @@ myApp.service('UserService', ['$http', '$location', '$window', '$route', '$mdDia
             self.userObject.fromOurDB.last_name = response.data.last_name;
             self.userObject.fromOurDB.id = response.data.id;
             self.userObject.fromOurDB.customer_id = response.data.customer_id;
-            console.log('UserService -- getuser -- User Data: ', self.userObject);
+            if(debug){console.log('UserService -- getuser -- User Data: ', self.userObject);};
             if(self.userObject.fromOurDB.customer_id){
               self.getStripeCustomerInfo();
               self.getDonationHistoryFromOurDB();
             }
         } else {
-            console.log('UserService -- getuser -- failure');
+            if(debug){console.log('UserService -- getuser -- failure');};
             // user has no session, bounce them back to the login page
             $location.path("/");
         }
     },function(response){
-      console.log('UserService -- getuser -- failure: ', response);
+      if(debug){console.log('UserService -- getuser -- failure: ', response);};
       $location.path("/");
     });
   }
 
   self.getAdmin = function() {
-    console.log('UserService -- getAdmin');
+    if(debug){console.log('UserService -- getAdmin');};
     self.currentPath = $location.path();
     $window.scrollTo(0, 0);
     $http.get('/auth').then(function(response) {
-      console.log(response, 'response in getAdmin');
+      if(debug){console.log(response, 'response in getAdmin');};
       if(response.data.role == 1) {
-        console.log('admin is logged in', response.data.role);
+        if(debug){console.log('admin is logged in', response.data.role);};
         self.userObject.fromOurDB.name = response.data.name;
         self.userObject.fromOurDB.fb_id = response.data.fb_id;
         self.userObject.fromOurDB.role = response.data.role;
@@ -87,7 +88,7 @@ myApp.service('UserService', ['$http', '$location', '$window', '$route', '$mdDia
           self.getDonationHistoryFromOurDB();
         }
       } else {
-        console.log('UserService -- getAdmin -- failure');
+        if(debug){console.log('UserService -- getAdmin -- failure');};
         // user in not admin, bounce them back to the login page
         $location.path("/");
       }
@@ -95,15 +96,15 @@ myApp.service('UserService', ['$http', '$location', '$window', '$route', '$mdDia
   }
 
   self.getAllUsers = function(){
-    console.log('in GetAllUsers');
+    if(debug){console.log('in GetAllUsers');};
     $http({
       method:'GET',
       url:'/user',
     }).then(function(response){
-      console.log('working in getAllUsers');
+      if(debug){console.log('working in getAllUsers');};
       self.userArray.list = response.data.rows
     }).catch(function(error){
-      console.log('error in getAllUsers', error);
+      if(debug){console.log('error in getAllUsers', error);};
     })
   }
 
@@ -117,18 +118,18 @@ myApp.service('UserService', ['$http', '$location', '$window', '$route', '$mdDia
   };
 
   self.getStripeCustomerInfo = function () {
-    console.log(self.userObject.fromOurDB.customer_id, 'customer_id in getstripecustinfo');
+    if(debug){console.log(self.userObject.fromOurDB.customer_id, 'customer_id in getstripecustinfo');};
     $http.get(`/stripe/customer/${self.userObject.fromOurDB.customer_id}`)
     .then(response => {
       self.userObject.stripeCustomerInfo.customerObject = response.data;
-      console.log('CUSTOMER:', self.userObject.stripeCustomerInfo);
+      if(debug){console.log('CUSTOMER:', self.userObject.stripeCustomerInfo);};
     }).catch(err => {
         console.log(err);
     });
   }
 
   self.checkStripeRegistration = function() {
-    console.log(self.userObject.fromOurDB.customer_id, 'customer_id in check stripe registration');
+    if(debug){console.log(self.userObject.fromOurDB.customer_id, 'customer_id in check stripe registration');};
     if (self.userObject.fromOurDB.customer_id){
       $location.path("/payment");
     } else {
@@ -140,7 +141,7 @@ myApp.service('UserService', ['$http', '$location', '$window', '$route', '$mdDia
     $http.get(`/stripe/charges/${self.userObject.fromOurDB.customer_id}`)
         .then(response => {
             self.userObject.stripeCustomerInfo.forReports.chargesByOrg = response.data;
-            console.log('AFTER GET USERS CHARGES', self.user);
+            if(debug){console.log('AFTER GET USERS CHARGES', self.user);};
         }).catch(err => {
             console.log(err);
         });
@@ -150,7 +151,7 @@ myApp.service('UserService', ['$http', '$location', '$window', '$route', '$mdDia
       $http.get(`/stripe/invoices/${self.userObject.fromOurDB.customer_id}`)
       .then(response => {
           self.userObject.stripeCustomerInfo.forReports.invoicesByOrg = response.data;
-        console.log('AFTER GET USERS INVOICES', self.user);
+        if(debug){console.log('AFTER GET USERS INVOICES', self.user);};
       }).catch(err => {
           console.log(err);
       });
@@ -165,17 +166,17 @@ myApp.service('UserService', ['$http', '$location', '$window', '$route', '$mdDia
     $mdDialog.show(confirm).then(function() {
       self.deleteUser(id);
     }, function() {
-      console.log('cancel delete user');
+      if(debug){console.log('cancel delete user');};
     });
   }
 
   self.deleteUser = function (id){
-    console.log('in Delete user');
+    if(debug){console.log('in Delete user');};
     $http({
       method:'DELETE',
       url:`/user/${id}`
     }).then(function(response){
-      console.log('deleted user');
+      if(debug){console.log('deleted user');};
       self.getAllUsers();
     }).catch((error)=>{
       console.log('error in delete', error);
@@ -191,17 +192,17 @@ myApp.service('UserService', ['$http', '$location', '$window', '$route', '$mdDia
     $mdDialog.show(confirm).then(function() {
       self.fbLogout();
     }, function() {
-      console.log('cancel logout');
+      if(debug){console.log('cancel logout');};
     });
   };
 
   self.fbLogout = function () {
-    console.log('in logout');
+    if(debug){console.log('in logout');};
     $http({
       method: 'GET',
       url: '/auth/logout',
     }).then(function(response){
-      console.log('success inlogout', response);
+      if(debug){console.log('success inlogout', response);};
       $location.path("/");
     })
   }
@@ -216,7 +217,7 @@ myApp.service('UserService', ['$http', '$location', '$window', '$route', '$mdDia
     $mdDialog.show(confirm).then(function() {
       $location.path("/register");
     }, function() {
-      console.log('cancel payment');
+      if(debug){console.log('cancel payment');};
     });
   }
 
@@ -269,7 +270,7 @@ myApp.service('UserService', ['$http', '$location', '$window', '$route', '$mdDia
           self.animatePage();
           self.subscribeToThisPlan(nonprofit, planId);
         }, function() {
-          console.log('cancel subscribe');
+          if(debug){console.log('cancel subscribe');};
         });
       } else {
         self.requiredAmountAlert();
@@ -292,7 +293,7 @@ myApp.service('UserService', ['$http', '$location', '$window', '$route', '$mdDia
     if (self.userObject.stripeCustomerInfo.customerObject.subscriptions.data.length > 0){
       for (subscription of self.userObject.stripeCustomerInfo.customerObject.subscriptions.data){
           if (nonprofit.product_id == subscription.plan.product){
-              console.log('already subscribed to this nonprofit');
+              if(debug){console.log('already subscribed to this nonprofit');};
               //unsubscribe customer to old subscription
               $http({
                   method: 'POST',
@@ -344,7 +345,7 @@ myApp.service('UserService', ['$http', '$location', '$window', '$route', '$mdDia
             self.animatePage();
             self.oneTimeDonate(product, amount);
           }, function() {
-            console.log('cancel subscribe');
+            if(debug){console.log('cancel subscribe');};
           });
         } else {
           self.requireGreaterThanFiveDollarsAlert();
@@ -369,7 +370,7 @@ myApp.service('UserService', ['$http', '$location', '$window', '$route', '$mdDia
           data: donation
       })
       .then(response => {
-          console.log(response);
+          if(debug){console.log(response);};
           self.oneTimeDonation.amount = '';
           self.getDonationHistoryFromOurDB();
       }).catch(err => {
@@ -402,12 +403,12 @@ myApp.service('UserService', ['$http', '$location', '$window', '$route', '$mdDia
   self.getDonationHistoryFromOurDB = function () {
     $http.get(`/user/donation-history/${self.userObject.fromOurDB.id}`)
     .then(response => {
-      console.log(' ********** USERS DONATION HISTORY OBJECT:', response.data);
+      if(debug){console.log('USERS DONATION HISTORY OBJECT:', response.data);};
       self.userObject.fromOurDB.donationHistory = response.data;
-      console.log('USER OBJECT AFTER getDonationHistoryFromOurDB', self.userObject);
+      if(debug){console.log('USER OBJECT AFTER getDonationHistoryFromOurDB', self.userObject);};
     }).catch(err => {
       console.log(err);
     });
   }
 
-}]); 
+}]);

@@ -26,18 +26,18 @@ myApp.service('FeedService', ['$http', '$location', '$route', '$mdDialog', '$win
       if(newFeed.feed_video && newFeed.feed_img_url){
         self.requireOnlyPhotoOrVideo();
       } else {
-        console.log('added to feed', newFeed, newFeedImg);
+        if(debug){console.log('added to feed', newFeed, newFeedImg);};
         if (newFeed.feed_video){
           let indexToCut = newFeed.feed_video.lastIndexOf('=');
           newFeed.feed_video = newFeed.feed_video.substring(indexToCut+1);
-          console.log(newFeed.feed_video, 'truncated video url');
+          if(debug){console.log(newFeed.feed_video, 'truncated video url');};
         }
         $http({
             method: 'POST',
             url: '/feed',
             data: {newFeed :newFeed, newFeedImg: newFeedImg}
         }).then(function(response){
-            console.log('success in feed item', response);
+            if(debug){console.log('success in feed item', response);};
             self.newFeedItem.name = '';
             self.newFeedItem.title = '';
             self.newFeedItem.feed_text = '';
@@ -76,13 +76,13 @@ myApp.service('FeedService', ['$http', '$location', '$route', '$mdDialog', '$win
   }
 
   self.getFeedItems = function (){
-    console.log('in get feed items');
+    if(debug){console.log('in get feed items');};
     $http({
       method:'GET',
       url: '/feed'
     }).then(function(response){
       self.allFeedItems.list = response.data.rows;
-      console.log(self.allFeedItems.list, 'feed items');
+      if(debug){console.log(self.allFeedItems.list, 'feed items');};
     }).catch(function(error){
       console.log('error in getting all feed items', error);
     })
@@ -102,12 +102,12 @@ myApp.service('FeedService', ['$http', '$location', '$route', '$mdDialog', '$win
   }
 
   self.deleteFeedItem = function(id) {
-    console.log('delete item');
+    if(debug){console.log('delete item');};
     $http({
       method:'DELETE',
       url:`/feed/${id}`
     }).then((response)=>{
-      console.log('deleted item');
+      if(debug){console.log('deleted item');};
       self.getFeedItems();
     }).catch((error)=>{
       console.log('error in delete', error);
@@ -124,7 +124,7 @@ myApp.service('FeedService', ['$http', '$location', '$route', '$mdDialog', '$win
      console.log('fed resp', editableFeedItem);
 
         self.editFeedToggle.show = true;
-        console.log('self.editFeedToggle', self.editFeedToggle);
+        if(debug){console.log('self.editFeedToggle', self.editFeedToggle);};
         self.newFeedItem.name = editableFeedItem.name;
         self.newFeedItem.feed_img_url = editableFeedItem.feed_img_url;
         self.newFeedItem.feed_text = editableFeedItem.feed_text;
@@ -141,13 +141,13 @@ myApp.service('FeedService', ['$http', '$location', '$route', '$mdDialog', '$win
     if(newFeedItem.feed_video && newFeedItem.feed_img_url){
       self.requireOnlyPhotoOrVideo();
     } else {
-        console.log('updated feed item');
+        if(debug){console.log('updated feed item');};
         $http({
           method:'PUT',
           url:`/feed`,
           data: newFeedItem
         }).then((response)=> {
-          console.log('success in update', response);
+          if(debug){console.log('success in update', response);};
           self.editFeedToggle.show = false;
           self.newFeedItem = {};
           self.getFeedItems();
@@ -160,24 +160,22 @@ myApp.service('FeedService', ['$http', '$location', '$route', '$mdDialog', '$win
   }
 
   self.cancelEditFeed = function(){
-    console.log('in cancelEditFeed');
+    if(debug){console.log('in cancelEditFeed');};
     self.newFeedItem = {};
     self.editFeedToggle.show = false;
     $route.reload();
   }
 
   self.feedPhotoUpload = function(){
-    console.log('in upload');
+    if(debug){console.log('in upload');};
     self.client.pick({
       accept: 'image/*',
       maxFiles: 1
     }).then(function(result){
-      console.log(result, 'filestack upload');
+      if(debug){console.log(result, 'filestack upload');};
       self.newFeedItem.feed_img_url = result.filesUploaded[0].url;
-      console.log('self.newFeedItem.feed_img_url', self.newFeedItem.feed_img_url);
+      if(debug){console.log('self.newFeedItem.feed_img_url', self.newFeedItem.feed_img_url);};
       $route.reload();
-
     })
   }
-
-}]); 
+}]);

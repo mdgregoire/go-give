@@ -1,16 +1,17 @@
 const express = require('express');
 const pool = require('../modules/pool.js');
 const router = express.Router();
+let debug = false;
 
-console.log('in feed router');
+if(debug){console.log('in feed router');};
 
 router.post('/', (request, response)=>{
   if (request.isAuthenticated()){
-    console.log('in post new feed item', request.body);
+    if(debug){console.log('in post new feed item', request.body);};
     pool.query(`INSERT INTO feed (nonprofit_id, feed_text, feed_img_url, feed_video_url) VALUES ($1, $2, $3, $4);`,
       [request.body.newFeed.id, request.body.newFeed.feed_text, request.body.newFeed.feed_img_url, request.body.newFeed.feed_video])
       .then((result) => {
-        console.log('registered new feed');
+        if(debug){console.log('registered new feed');};
           response.sendStatus(201);
       })
       .catch((err) => {
@@ -24,13 +25,13 @@ router.post('/', (request, response)=>{
 //end post feed item
 
 router.get('/', (request, response) => {
-  console.log('in get all feed items');
+  if(debug){console.log('in get all feed items');};
   if (request.isAuthenticated()){
     pool.query(`SELECT nonprofit.name, nonprofit.logo_url, feed.feed_text, feed.feed_img_url, feed.feed_video_url, feed.feed_date_posted, feed.id, feed.nonprofit_id FROM feed
                 JOIN nonprofit ON nonprofit.id = feed.nonprofit_id
                 ORDER by feed_date_posted DESC;`)
     .then((result) => {
-      console.log('success in get all feeds', result.rows);
+      if(debug){console.log('success in get all feeds', result.rows);};
       response.send(result)
     })
     .catch((err) => {
@@ -43,11 +44,11 @@ router.get('/', (request, response) => {
 })//end get all feed items
 
 router.delete('/:id', (request, response) => {
-  console.log('in delete router', request.params.id);
+  if(debug){console.log('in delete router', request.params.id);};
   if (request.isAuthenticated()){
     pool.query(`DELETE FROM feed WHERE id = $1;`,[request.params.id])
     .then((result) => {
-      console.log('success in delete', result);
+      if(debug){console.log('success in delete', result);};
       response.sendStatus(201);
     })
     .catch((err) => {
@@ -66,7 +67,7 @@ router.get('/:id', (request , response) => {
     JOIN nonprofit ON nonprofit.id = feed.nonprofit_id
     WHERE feed.id = $1;`, [request.params.id])
     .then((result) => {
-      console.log('success in get for edit', result);
+      if(debug){console.log('success in get for edit', result);};
       response.send(result)
     })
     .catch((err) => {
@@ -81,11 +82,11 @@ router.get('/:id', (request , response) => {
 
 router.put('/', (request, response) => {
   if (request.isAuthenticated()){
-    console.log('in update router', request.body);
+    if(debug){console.log('in update router', request.body);};
     pool.query(`UPDATE feed SET feed_text = $1, feed_img_url = $2, feed_video_url = $3
     WHERE feed.id = $4;`, [ request.body.feed_text, request.body.feed_img, request.body.feed_video, request.body.id])
     .then((result) => {
-      console.log('success in update', result);
+      if(debug){console.log('success in update', result);};
       response.sendStatus(201);
     })
     .catch((err) => {

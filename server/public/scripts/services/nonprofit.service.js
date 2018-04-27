@@ -1,7 +1,8 @@
 myApp.service('NonprofitService', ['$http', '$location', '$route', '$mdDialog', '$window', function($http, $location, $route, $mdDialog, $window) {
 
   let self = this;
-  
+  let debug = false;
+
   self.newNonprofit = {};
   self.allNonprofits = {
     list: [],
@@ -13,7 +14,7 @@ myApp.service('NonprofitService', ['$http', '$location', '$route', '$mdDialog', 
     solo: {},
     topDonors: {}
   };
-  
+
   self.getFileStackKey = function () {
     let FILESTACK_KEY;
     $http.get('/filestack-key')
@@ -27,13 +28,13 @@ myApp.service('NonprofitService', ['$http', '$location', '$route', '$mdDialog', 
   }
 
   self.getFileStackKey();
-  
+
 
   self.addNonprofit = function (newNonprofit){
     if(!self.newNonprofit.name || !self.newNonprofit.description || !self.newNonprofit.picture_url || !self.newNonprofit.logo_url || !self.newNonprofit.state || !self.newNonprofit.city){
       self.requireNonprofitInputs();
     } else {
-      console.log('add non profit', newNonprofit);
+      if(debug){console.log('add non profit', newNonprofit);};
       $http({
           method:'POST',
           url:'/nonprofit',
@@ -59,14 +60,14 @@ myApp.service('NonprofitService', ['$http', '$location', '$route', '$mdDialog', 
   }
 
   self.getAllNonprofit = function (){
-    console.log('in get all nonprofits -- service');
+    if(debug){console.log('in get all nonprofits -- service');};
     $http({
       method: 'GET',
       url: '/nonprofit'
     }).then(function(response){
       self.allNonprofits.list = response.data.rows;
       self.getReceivedDonationsForNonprofits()
-      console.log(self.allNonprofits.list, 'ALL NONPROFITS!!!');
+      if(debug){console.log(self.allNonprofits.list, 'ALL NONPROFITS!!!');};
     }).catch(function(error){
       console.log('error in get all', error);
     })
@@ -77,7 +78,7 @@ myApp.service('NonprofitService', ['$http', '$location', '$route', '$mdDialog', 
     $http.get(`/nonprofit/donation-history/${nonprofitIds}`)
         .then(response => {
           self.allNonprofits.receivedDonations = response.data;
-          console.log('',self.allNonprofits);
+          if(debug){console.log('',self.allNonprofits);};
         })
         .catch(err => {
           console.log(err);
@@ -88,7 +89,7 @@ myApp.service('NonprofitService', ['$http', '$location', '$route', '$mdDialog', 
   self.getTopDonors = function (nonprofitId) {
     $http.get(`/nonprofit/top-donors/${nonprofitId}`)
     .then(response => {
-      console.log('TOP DONORS RESPONSE ******', response.data);
+      if(debug){console.log('TOP DONORS RESPONSE', response.data);};
       self.nonprofitToDisplay.topDonors = response.data;
     })
     .catch(err => {
@@ -111,27 +112,27 @@ myApp.service('NonprofitService', ['$http', '$location', '$route', '$mdDialog', 
     $mdDialog.show(confirm).then(function() {
       self.deleteNonprofit(id);
     }, function() {
-      console.log('cancel delete nonprofit');
-    });    
+      if(debug){console.log('cancel delete nonprofit');};
+    });
   }
 
   self.deleteNonprofit = function(id){
-    console.log('in delete nonprofit', id);
+    if(debug){console.log('in delete nonprofit', id);};
     $http({
       method: 'DELETE',
       url: `/nonprofit/${id}`
     }).then(function(response) {
       self.getAllNonprofit();
     }).catch(function(error) {
-      console.log('error in delete nonprofit', error);
+      if(debug){console.log('error in delete nonprofit', error);};
     })
   }
 
   self.populateEditFields = function(id){
-    console.log('in populateEditFields', id);
+    if(debug){console.log('in populateEditFields', id);};
     self.getSoloNonprofit(id)
     .then(function() {
-      console.log('response in populate nonprofit after then', self.soloNonprofit);
+      if(debug){console.log('response in populate nonprofit after then', self.soloNonprofit);};
       self.editNonprofitToggle.show = true;
       self.newNonprofit.name = self.soloNonprofit.name;
       self.newNonprofit.description = self.soloNonprofit.description;
@@ -149,13 +150,13 @@ myApp.service('NonprofitService', ['$http', '$location', '$route', '$mdDialog', 
     if(!editedNonprofit.name || !editedNonprofit.description || !editedNonprofit.picture_url || !editedNonprofit.logo_url || !editedNonprofit.state || !editedNonprofit.city){
       self.requireNonprofitInputs();
     } else {
-      console.log('in submitEditedNonprofit', editedNonprofit);
+      if(debug){console.log('in submitEditedNonprofit', editedNonprofit);};
       $http({
         method: 'PUT',
         url: '/nonprofit',
         data: editedNonprofit
       }).then(function(response){
-        console.log('success in edit nonprofit', response);
+        if(debug){console.log('success in edit nonprofit', response);};
         self.editNonprofitToggle.show = false;
         self.newNonprofit = {};
         self.getAllNonprofit();
@@ -168,35 +169,35 @@ myApp.service('NonprofitService', ['$http', '$location', '$route', '$mdDialog', 
   }
 
   self.cancelEditNonprofit = function(){
-    console.log('in cancelEditNonprofit');
+    if(debug){console.log('in cancelEditNonprofit');};
     self.newNonprofit = {};
     self.editNonprofitToggle.show = false;
     $route.reload();
   }
 
   self.displaySoloNonprofit = function(id){
-    console.log('in displaySoloNonprofit', id);
+    if(debug){console.log('in displaySoloNonprofit', id);};
     self.getTopDonors(id);
     self.getSoloNonprofit(id)
       .then(function(){
-        console.log(self.soloNonprofit, 'soloNonprofit in displaySoloNonprofit');
+        if(debug){console.log(self.soloNonprofit, 'soloNonprofit in displaySoloNonprofit');};
         self.nonprofitToDisplay.solo = self.soloNonprofit;
-        console.log('self.nonprofitToDisplay##@@@###@@@###', self.nonprofitToDisplay);
+        if(debug){console.log('self.nonprofitToDisplay', self.nonprofitToDisplay);};
       })
   }
 
   self.getSoloNonprofit = function(id) {
-    console.log('in sologet ', id);
+    if(debug){console.log('in sologet ', id);};
       return $http({
       method: 'GET',
       url: `/nonprofit/${id}`
     }).then(function(response) {
       self.soloNonprofit = response.data.rows[0];
     }).catch(function(error) {
-      console.log('error in populate edit fields', error);
+      if(debug){console.log('error in populate edit fields', error);};
     })
   }
-  
+
   self.cropAlert = function(type, ev){
     let confirm = $mdDialog.confirm()
         .title('Please crop logo to either square or circle.')
@@ -205,26 +206,25 @@ myApp.service('NonprofitService', ['$http', '$location', '$route', '$mdDialog', 
     $mdDialog.show(confirm).then(function() {
       self.upload(type);
     }, function() {
-      console.log('cancel delete nonprofit');
-    });    
+      if(debug){console.log('cancel delete nonprofit');};
+    });
   }
 
   self.upload = function(type){
-    console.log('in upload');
+    if(debug){console.log('in upload');};
     self.client.pick({
       accept: 'image/*',
       maxFiles: 1
     }).then(function(result){
-      console.log(result, 'filestack upload');
+      if(debug){console.log(result, 'filestack upload');};
       if (type == 'photo') {
       self.newNonprofit.picture_url = result.filesUploaded[0].url;
-      console.log('self.newNonprofit.picture_url', self.newNonprofit.picture_url);
+      if(debug){console.log('self.newNonprofit.picture_url', self.newNonprofit.picture_url);};
     } else if(type == 'logo') {
       self.newNonprofit.logo_url = result.filesUploaded[0].url;
-      console.log('self.newNonprofit.logo_url', self.newNonprofit.logo_url);
+      if(debug){console.log('self.newNonprofit.logo_url', self.newNonprofit.logo_url);};
     }
     $route.reload();
     })
   }
-
-}]); 
+}]);

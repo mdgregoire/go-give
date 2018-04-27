@@ -1,6 +1,7 @@
 myApp.controller('StripeController', ['UserService', '$location', '$window', '$http', '$mdDialog', function(UserService, $location, $window, $http, $mdDialog){
-    
+
     const self = this;
+    let debug = false;
 
     self.userObject = UserService.userObject;
     self.UserService = UserService;
@@ -100,10 +101,10 @@ myApp.controller('StripeController', ['UserService', '$location', '$window', '$h
             stripeSource: form.elements[7].defaultValue,
             userId: UserService.userObject.fromOurDB.id,
         };
-        console.log(newCustomerData, 'newCustomerData in stripe cont');
+        if(debug){console.log(newCustomerData, 'newCustomerData in stripe cont');};
         $http.post('/stripe/register', newCustomerData)
         .then(response => {
-            console.log(response);
+            if(debug){console.log(response);};
             if (self.userObject.fromOurDB.role === 1){
               self.getAdmin();
             } else {
@@ -127,7 +128,7 @@ myApp.controller('StripeController', ['UserService', '$location', '$window', '$h
                     url: '/stripe/updateCard',
                     data: customer
                 }).then(response => {
-                    console.log(response);
+                    if(debug){console.log(response);};
                     self.getStripeCustomerInfo();
                     self.editingCard = false;
                     card.clear();
@@ -146,7 +147,7 @@ myApp.controller('StripeController', ['UserService', '$location', '$window', '$h
             url: '/stripe/updateEmail',
             data: customer
         }).then(response => {
-            console.log(response);
+            if(debug){console.log(response);};
             self.getStripeCustomerInfo();
             self.editingEmail = false;
         }).catch(err => {
@@ -160,10 +161,10 @@ myApp.controller('StripeController', ['UserService', '$location', '$window', '$h
         $http.get('/database/nonprofits')
             .then(response => {
                 self.charities.list = response.data;
-                console.log(self.charities.list);
+                if(debug){console.log(self.charities.list);};
             }).catch(err => {
                 console.log(err);
             });
     }
-    
+
 }]);

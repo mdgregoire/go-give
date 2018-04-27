@@ -1,7 +1,6 @@
 const myApp = angular.module('myApp', ['ngRoute', 'ngMaterial', 'ngSanitize']);
 
 myApp.config(['$routeProvider', '$locationProvider', '$mdThemingProvider', function($routeProvider, $locationProvider, $mdThemingProvider) {
-  console.log('myApp -- config');
   $mdThemingProvider.theme('default')
     .primaryPalette('blue')
     .accentPalette('orange')

@@ -7,8 +7,9 @@ const userReports = require('../modules/stripe.user.reports');
 const insertIntoOnetime_Donations = require('../modules/save.onetime.donation');
 const updateSubscriptionStatus = require('../modules/ourDB.update.subscription.status');
 const updateInvoices = require('../modules/update.invoices');
+let debug = false;
 
-console.log('in stripe router', process.env.STRIPE_SECRET_KEY);
+if(debug){console.log('in stripe router', process.env.STRIPE_SECRET_KEY);};
 
 // Get all transactions on Whyatt's account
 router.get('/all-transactions', (req, res) => {
@@ -89,7 +90,7 @@ router.get('/all-orders', (req, res) => {
 // the response––a customer object––in our database
 router.post('/register', function (req, res) {
   if (req.isAuthenticated()){
-    console.log('req.body ----- - -- ----- ', req.body);
+    if(debug){console.log('req.body ----- - -- ----- ', req.body);};
     let source = req.body.stripeSource;
     let email = req.body.email;
     let name = req.body.name;
@@ -101,7 +102,7 @@ router.post('/register', function (req, res) {
                 console.log(`ERROR on stripe.customers.create with email: ${email}`, err);
                 res.sendStatus(500)
             } else {
-                console.log('customer ++++ + ++ ++', customer);
+                if(debug){console.log('customer ++++ + ++ ++', customer);};
                 const sqlText = `UPDATE users SET customer_id=$1 WHERE id=$2`;
                 pool.query(sqlText, [customer.id, userId])
                 .then(response => {
@@ -122,8 +123,8 @@ router.post('/register', function (req, res) {
 // Create subscription
 router.post('/subscribe_to_plan', (req, res) => {
   if (req.isAuthenticated()){
-    console.log('customer id -----------', req.body.customerId);
-    console.log('plan id ---------------', req.body.planId);
+    if(debug){console.log('customer id -----------', req.body.customerId);};
+    if(debug){console.log('plan id ---------------', req.body.planId);};
     stripe.subscriptions.create({
         customer: req.body.customerId,
         items: [
@@ -147,12 +148,12 @@ router.post('/subscribe_to_plan', (req, res) => {
 let nonprofit = {};
 
 function postNonprofit(nonprofit){
-    console.log(nonprofit);
+    if(debug){console.log(nonprofit);};
     const sqlText = `INSERT INTO nonprofit (name, city, state, description, product_id, plan_id_five, plan_id_ten, plan_id_twenty, created)
             VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9);`;
     pool.query(sqlText, [nonprofit.name, nonprofit.city, nonprofit.state, nonprofit.description, nonprofit.product_id, nonprofit.plan_id_five, nonprofit.plan_id_ten, nonprofit.plan_id_twenty, new Date()])
     .then(response => {
-        console.log(response);
+        if(debug){console.log(response);};
     }).catch(err => {
         console.log('ERROR on INSERT INTO users', err);
     })
@@ -161,7 +162,7 @@ function postNonprofit(nonprofit){
  // find a stripe.customer by id
 router.get('/customer/:customerId', (req, res) => {
     const customerId = req.params.customerId;
-    console.log(customerId, 'customerID');
+    if(debug){console.log(customerId, 'customerID');};
     stripe.customers.retrieve(customerId, (err, customer) => {
         if(err){
             console.log('ERROR on getting customer ' + customerId + ' from stripe ----- ', err);

@@ -2,13 +2,14 @@ const express = require('express');
 const pool = require('../modules/pool.js');
 const router = express.Router();
 const getUsersDonationHistory = require('../modules/ourDB.user.donation.info');
+let debug = false;
 
 router.get('/:id', (request, response) => {
   if (request.isAuthenticated()){
-    console.log('in get check for register', request.params.id);
+    if(debug){console.log('in get check for register', request.params.id);};
     pool.query('SELECT * FROM users WHERE fb_id = $1;', [request.params.id])
     .then((result) => {
-      console.log('success in get', result);
+      if(debug){console.log('success in get', result);};
       response.send(result);
     })
     .catch((err) => {
@@ -22,10 +23,10 @@ router.get('/:id', (request, response) => {
 
 router.get('/', (request, response)=>{
   if (request.isAuthenticated()){
-    console.log('in get all users route');
+    if(debug){console.log('in get all users route');};
     pool.query('SELECT * FROM users ORDER BY last_name;')
     .then((result)=>{
-      console.log('success in get', result.rows);
+      if(debug){console.log('success in get', result.rows);};
       response.send(result);
     })
     .catch((err) => {
@@ -38,10 +39,10 @@ router.get('/', (request, response)=>{
 
 router.delete('/:id', (request, response) => {
   if (request.isAuthenticated()){
-    console.log('in delete user route', request.params.id);
+    if(debug){console.log('in delete user route', request.params.id);};
     pool.query('DELETE FROM users WHERE id = $1;', [request.params.id])
     .then((result) => {
-      console.log('success in deleting user', result);
+      if(debug){console.log('success in deleting user', result);};
       response.sendStatus(200);
     })
     .catch((err) => {

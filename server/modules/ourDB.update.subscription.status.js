@@ -7,12 +7,12 @@ function updateSubscriptionStatus (subscription, res) {
             if(res){
                 res.sendStatus(200);
             }
-           
+
         })
         .catch(err => {
-            console.log('ERROR on UPDATE invoices ******* ', err);
+            console.log('ERROR on UPDATE invoices', err);
             if(res){
-                res.sendStatus(500);            
+                res.sendStatus(500);
             }
         });
 }

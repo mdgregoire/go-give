@@ -1,6 +1,6 @@
 myApp.controller('UserSubscriptionsController', ['UserService', 'NonprofitService', '$mdDialog', '$http', function(UserService, NonprofitService, $mdDialog, $http){
     const self = this;
-
+    let debug = false;
     self.UserService = UserService;
     self.NonprofitService = NonprofitService;
 
@@ -20,7 +20,7 @@ myApp.controller('UserSubscriptionsController', ['UserService', 'NonprofitServic
         $mdDialog.show(confirm).then(function() {
             self.unsubscribe(id);
         }, function() {
-            console.log('cancel unsubscribe');
+            if(debug){console.log('cancel unsubscribe');};
         });
     };
 
@@ -30,7 +30,7 @@ myApp.controller('UserSubscriptionsController', ['UserService', 'NonprofitServic
             url: '/stripe/unsubscribe',
             data: {id: id}
         }).then(response => {
-            console.log('CONFIRMATION OBJECT FROM STRIPE FOR UNSUBSCRIBE****', response);
+            if(debug){console.log('CONFIRMATION OBJECT FROM STRIPE FOR UNSUBSCRIBE****', response);};
             self.UserService.getStripeCustomerInfo();
         }).catch(err => {
             console.log(err);

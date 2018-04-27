@@ -1,5 +1,6 @@
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 const pool = require('./pool');
+let debug = false;
 
 const updateSubscriptionStatus = require('./ourDB.update.subscription.status');
 
@@ -7,8 +8,6 @@ const updateSubscriptionStatus = require('./ourDB.update.subscription.status');
 // Call the first function in the function chain.
 // We module.exports this.
 function updateInvoicesTableInOurDB (res) {
-    // console.log('########$$$$$$$$$@@@@@@@@ res', res);
-    
     getUsersFromOurDB(res)
 }
 
@@ -20,8 +19,7 @@ function getUsersFromOurDB (res) {
     const sqlText = `SELECT * FROM users ORDER BY id;`;
     pool.query(sqlText, [])
     .then(response => {
-      console.log(response, 'response in getUsersFromOurDB');
-        // console.log('RESPONSE ------ ', response);
+      if(debug){console.log(response, 'response in getUsersFromOurDB');};
         response.rows.forEach(user => {
           if(user.customer_id){
             getStripeCustomerInfoFor(user, res)
@@ -37,7 +35,7 @@ function getUsersFromOurDB (res) {
 // the response and for each subscription, get all invoices
 // Stripe invoices associated with it
 function getStripeCustomerInfoFor (user, res) {
-  console.log(user, '*******************user in getStripeCustomerInfoFor');
+  if(debug){console.log(user, 'user in getStripeCustomerInfoFor');};
     stripe.customers.retrieve(user.customer_id,
         (err, customer) => {
             if(err){
@@ -94,7 +92,7 @@ function getInvoicesFromDBAndCheckAgainstThese (stripeInvoices, res) {
 
 
 // Update ourDB with information from the Stripe invoice passed in.
-function updateOurDBWith (invoice, res) {    
+function updateOurDBWith (invoice, res) {
     const sqlText = `UPDATE invoices SET
             amount_paid=$1,
             last_updated=$2,
@@ -102,7 +100,7 @@ function updateOurDBWith (invoice, res) {
         WHERE invoice_id=$4;`;
     pool.query(sqlText, [invoice.amount_paid, new Date(), new Date(invoice.date * 1000), invoice.id])
     .then(response => {
-        console.log('SUCCESS on UPDATE invoices');
+        if(debug){console.log('SUCCESS on UPDATE invoices');};
         getSubscriptionWith(invoice.subscription, res);
     })
     .catch(err => {
@@ -146,7 +144,7 @@ function insertIntoOurDB(invoice, res) {
         invoice.lines.data[0].plan.product
     ])
     .then(response => {
-        console.log('SUCCESS on INSERT INTO invoices');
+        if(debug){console.log('SUCCESS on INSERT INTO invoices');};
         getSubscriptionWith(invoice.subscription, res);
     })
     .catch(err => {
@@ -156,7 +154,7 @@ function insertIntoOurDB(invoice, res) {
 
 
 function getSubscriptionWith (subscriptionId, res) {
-    stripe.subscriptions.retrieve(subscriptionId, 
+    stripe.subscriptions.retrieve(subscriptionId,
     (err, subscription) => {
         if(err){
             console.log(err);
@@ -167,7 +165,3 @@ function getSubscriptionWith (subscriptionId, res) {
 }
 
 module.exports = updateInvoicesTableInOurDB;
-
-
-
-// Get the subscription object for each invoice inserted and update subscription status for it
