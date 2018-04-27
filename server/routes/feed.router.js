@@ -8,16 +8,16 @@ router.post('/', (request, response)=>{
   if (request.isAuthenticated()){
     console.log('in post new feed item', request.body);
     pool.query(`INSERT INTO feed (nonprofit_id, feed_text, feed_img_url, feed_video_url) VALUES ($1, $2, $3, $4);`,
-                [request.body.newFeed.id, request.body.newFeed.feed_text, request.body.newFeed.feed_img_url, request.body.newFeed.feed_video])
-                .then((result) => {
-                    console.log('registered new feed');
-                    response.sendStatus(201);
-                })
-                .catch((err) => {
-                    console.log('error in feed' , err);
-                    response.sendStatus(500);
-                })
-    } else {
+      [request.body.newFeed.id, request.body.newFeed.feed_text, request.body.newFeed.feed_img_url, request.body.newFeed.feed_video])
+      .then((result) => {
+        console.log('registered new feed');
+          response.sendStatus(201);
+      })
+      .catch((err) => {
+        console.log('error in feed' , err);
+        response.sendStatus(500);
+      })
+  } else {
       response.sendStatus(403);
     }
 })
@@ -41,8 +41,6 @@ router.get('/', (request, response) => {
     response.sendStatus(403);
   }
 })//end get all feed items
-
-
 
 router.delete('/:id', (request, response) => {
   console.log('in delete router', request.params.id);
@@ -69,12 +67,10 @@ router.get('/:id', (request , response) => {
     WHERE feed.id = $1;`, [request.params.id])
     .then((result) => {
       console.log('success in get for edit', result);
-
       response.send(result)
     })
     .catch((err) => {
       console.log('error in get for edit', err);
-
       response.sendStatus(500)
     })
   } else {
@@ -83,16 +79,14 @@ router.get('/:id', (request , response) => {
 })
 // end get for update
 
-
 router.put('/', (request, response) => {
   if (request.isAuthenticated()){
     console.log('in update router', request.body);
     pool.query(`UPDATE feed SET feed_text = $1, feed_img_url = $2, feed_video_url = $3
-                 WHERE feed.id = $4;`, [ request.body.feed_text, request.body.feed_img, request.body.feed_video, request.body.id])
+    WHERE feed.id = $4;`, [ request.body.feed_text, request.body.feed_img, request.body.feed_video, request.body.id])
     .then((result) => {
       console.log('success in update', result);
       response.sendStatus(201);
-
     })
     .catch((err) => {
       console.log('error in update', err);
@@ -102,6 +96,6 @@ router.put('/', (request, response) => {
     response.sendStatus(403);
   }
 });
-
+//end put for update feed
 
 module.exports = router;
