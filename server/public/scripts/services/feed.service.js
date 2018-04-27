@@ -1,5 +1,6 @@
 myApp.service('FeedService', ['$http', '$location', '$route', '$mdDialog', '$window', function($http, $location, $route, $mdDialog, $window) {
   let self = this;
+  let debug = false;
 
   self.newFeedItem = {};
   self.allFeedItems = {list: []};
