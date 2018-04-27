@@ -6,7 +6,7 @@ const updateInvoices = require('../modules/update.invoices');
 
 // Execute the code block once every Day at 1AM
 // Then the invoices get updated in out DB
-cron.schedule('1 * * *', function () {
+cron.schedule('1 * * * *', function () {
     console.log('NODE-CRONNING!!', new Date().toLocaleTimeString());
     updateInvoices();
 });

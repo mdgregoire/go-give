@@ -84,7 +84,6 @@ router.get('/all-orders', (req, res) => {
   }
 });
 
-
 // Send new customer email and source (encripted card token)
 // information to stripe. Then save some important bits from
 // the response––a customer object––in our database
@@ -162,7 +161,7 @@ function postNonprofit(nonprofit){
  // find a stripe.customer by id
 router.get('/customer/:customerId', (req, res) => {
     const customerId = req.params.customerId;
-    console.log(customerId, 'customerIDhn4444444444444444444');
+    console.log(customerId, 'customerID');
     stripe.customers.retrieve(customerId, (err, customer) => {
         if(err){
             console.log('ERROR on getting customer ' + customerId + ' from stripe ----- ', err);
