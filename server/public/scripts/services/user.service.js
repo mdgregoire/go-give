@@ -38,7 +38,7 @@ myApp.service('UserService', ['$http', '$location', '$window', '$route', '$mdDia
 
   self.getUser = function(){
     if(debug){console.log('UserService -- getuser');};
-    if(debug){console.log(self.userObject, 'userobj in get user');}:
+    if(debug){console.log(self.userObject, 'userobj in get user');};
     self.currentPath = $location.path();
     $window.scrollTo(0, 0);
     $http.get('/auth').then(function(response) {
