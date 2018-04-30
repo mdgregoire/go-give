@@ -28,7 +28,7 @@ To get cogiv running on your machine locally, you will need:
 ### Installing:
 - Download the Zip
 - ```npm install```
-- ```npm start```
+
 
 You will need to create a .env file in the project root. There you will need to store the following:
 
@@ -68,7 +68,8 @@ You will need to provide Facebook with a Valid OAuth Redirect URI:
 You will need to provide Facebook with the domain of the site, do this in the basic settings, for local development use 'localhost:4430' for deployment use the site domain.
 Also, in the basic settings provide the site URL, again for local development use 'localhost:4430' and for deployment use the app domain.
 
-
+After all that you are ready to start the app:
+- ```npm start```
 
 ==========================================================================================
 Below are the directions for deploying to heroku:
