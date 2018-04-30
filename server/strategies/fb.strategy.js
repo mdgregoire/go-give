@@ -3,11 +3,18 @@ var passport = require('passport')
 var pool = require('../modules/pool.js');
 
 let debug = false;
+if(process.env.DEV == 'true'){
+  let CALLBACK_URL = process.env.LOCALHOST_REDIRECT_URL
+  console.log(CALLBACK_URL);
+} else {
+  let CALLBACK_URL = process.env.DEPLOY_REDIRECT_URL
+  console.log(CALLBACK_URL);
+}
 
 passport.use(new FacebookStrategy({
     clientID: process.env.FACEBOOK_APP_ID,
     clientSecret: process.env.FACEBOOK_APP_SECRET,
-    callbackURL: "https://cogiv.herokuapp.com/auth/facebook/callback",
+    callbackURL: CALLBACK_URL,
     profileFields: ['id', 'displayName', 'birthday','first_name', 'last_name',
       'middle_name', 'gender', 'link', 'picture']
   },

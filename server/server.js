@@ -39,6 +39,7 @@ if(process.env.DEV == 'true') {
     console.log(`server listening on port ${PORT}`);
   });//end app listen
 }
+//end if for dev
 
 
 // Body parser middleware
