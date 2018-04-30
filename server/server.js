@@ -17,11 +17,27 @@ app.use(sessionConfig);
 app.use(passport.initialize());
 app.use(passport.session());
 
-const PORT = process.env.PORT || 5000;
+//this logic checks to see if you are in dev mode and need to work on localhost
+//if you are on ocalhost you need to create your own ssl certificate
+//if you are on heroku you need to not use the ssl cert since heroku provides its own
+if(process.env.DEV) {
+  //pem generates our SSL Certifiace here
+  pem.createCertificate({ days: 1, selfSigned: true }, function (err, keys) {
+    if (err) {
+      throw err
+    }
+  //Keys for https are used here
+  https.createServer({ key: keys.serviceKey, cert: keys.certificate }, app).listen(4430)
+  console.log('listening on port 4430');
+  })
+} else{
+  //if you are not in dev mode the server does not need to generate its own ssl
+  const PORT = process.env.PORT || 5000;
+  app.listen(PORT, function(){
+    console.log(`server listening on port ${PORT}`);
+  });//end app listen
+}
 
-app.listen(PORT, function(){
-  console.log(`server listening on port ${PORT}`);
-});//end app listen
 
 // Body parser middleware
 app.use(bodyParser.urlencoded({extended: true}));
