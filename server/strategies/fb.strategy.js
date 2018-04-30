@@ -3,18 +3,19 @@ var passport = require('passport')
 var pool = require('../modules/pool.js');
 
 let debug = false;
+let cbUrl;
 if(process.env.DEV == 'true'){
-  let CALLBACK_URL = process.env.LOCALHOST_REDIRECT_URL
-  console.log(CALLBACK_URL);
+  cbUrl = process.env.LOCALHOST_REDIRECT_URL
+  console.log(cbUrl);
 } else {
-  let CALLBACK_URL = process.env.DEPLOY_REDIRECT_URL
-  console.log(CALLBACK_URL);
+  cbUrl = process.env.DEPLOY_REDIRECT_URL
+  console.log(cbUrl);
 }
 
 passport.use(new FacebookStrategy({
     clientID: process.env.FACEBOOK_APP_ID,
     clientSecret: process.env.FACEBOOK_APP_SECRET,
-    callbackURL: CALLBACK_URL,
+    callbackURL: cbUrl,
     profileFields: ['id', 'displayName', 'birthday','first_name', 'last_name',
       'middle_name', 'gender', 'link', 'picture']
   },

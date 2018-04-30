@@ -21,7 +21,7 @@ app.use(passport.session());
 //if you are on ocalhost you need to create your own ssl certificate
 //if you are on heroku you need to not use the ssl cert since heroku provides its own
 if(process.env.DEV == 'true') {
-  console.log('in DEV mdoe');
+  console.log('in DEV local mode, from server');
   //pem generates our SSL Certifiace here
   pem.createCertificate({ days: 1, selfSigned: true }, function (err, keys) {
     if (err) {
@@ -32,7 +32,7 @@ if(process.env.DEV == 'true') {
   console.log('listening on port 4430');
   })
 } else{
-  console.log('in live mode');
+  console.log('in live mode, from server');
   //if you are not in dev mode the server does not need to generate its own ssl
   const PORT = process.env.PORT || 5000;
   app.listen(PORT, function(){
