@@ -1,6 +1,6 @@
-# Co-giv
+# cogiv
 
-Co-giv is a social media platform that gives service non profit organizations exposure to new audiences. It creates an environment where non-profit giving is a more collective, rewarding experience for donors. With co-giv, users will be able to discover nonprofits working toward causes that they care about, subscribe to make monthly donations to the charities they feel passionate about, and receive meaningful feedback about their own impact over time as well as the collective impact of the community of fellow co-givers. Cogiv amplifies the impact of micro-donating on a collective level and makes its consequences felt.
+cogiv is a social media platform that gives service non profit organizations exposure to new audiences. It creates an environment where nonprofit giving is a more collective, rewarding experience for donors. With cogiv, users will be able to discover nonprofits working toward causes that they care about, subscribe to make monthly donations to the charities they feel passionate about, and receive meaningful feedback about their own impact over time as well as the collective impact of the community of fellow cogivers. cogiv amplifies the impact of micro-donating on a collective level and makes its consequences felt.
 
 ## Built With:
 - AngularJS / Angular Material
@@ -57,7 +57,7 @@ You will need to create and register a new application with Facebook.
 - After that In the 'Facebook Login' box select 'Set Up'.
 - Select 'Web'.
 - Enter the sites Url and click continue.
-- Hit next through the next 3 pages.
+- Hit 'Next' through the next 3 pages.
 - Copy the App Id and paste it into your .env file.
 - Select the main settings, then 'basic'. Click 'show secret', then copy and paste that into your .env file.
 
