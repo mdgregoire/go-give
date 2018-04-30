@@ -71,6 +71,9 @@ Also, in the basic settings provide the site URL, again for local development us
 After all that you are ready to start the app:
 - ```npm start```
 
+
+We used the Stripe API to handle the creation of customers, products, subscriptions, and charges within our code.  For a comprehensive rundown of the Stripe API and its capabilities, see Stripe's superb <a href="https://stripe.com/docs/api/">API documentation</a>.  In addition the API, Stripe offers a powerful and intuitive <a href="https://dashboard.stripe.com/test/dashboard">Dashboard</a> tool.  For a guide of Stripe's Dashboard and API features, checkout Stripe's <a href="https://stripe.com/docs/quickstart">Quickstart</a> guide.
+
 ==========================================================================================
 Below are the directions for deploying to heroku:
 
