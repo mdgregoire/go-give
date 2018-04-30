@@ -20,7 +20,7 @@ app.use(passport.session());
 //this logic checks to see if you are in dev mode and need to work on localhost
 //if you are on ocalhost you need to create your own ssl certificate
 //if you are on heroku you need to not use the ssl cert since heroku provides its own
-if(process.env.DEV) {
+if(process.env.DEV == 'true') {
   console.log('in DEV mdoe');
   //pem generates our SSL Certifiace here
   pem.createCertificate({ days: 1, selfSigned: true }, function (err, keys) {
