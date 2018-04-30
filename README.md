@@ -100,7 +100,7 @@ Run the following commands from within your project folder.
 ### Postgresql on Heroku
 
 1. In terminal, type `heroku addons:create heroku-postgresql:hobby-dev` to set up Postgresql on your Heroku project
-2. Next, type `heroku pg:push gacrux-todo DATABASE_URL` to copy your co_giv database contents up to Heroku. **DATABASE\_URL is a heroku config variable created by the Add On. Do not replace it with something else, just type: DATABASE\_URL**
+2. Next, type `heroku pg:push co_giv DATABASE_URL` to copy your co_giv database contents up to Heroku. **DATABASE\_URL is a heroku config variable created by the Add On. Do not replace it with something else, just type: DATABASE\_URL**
 
 If you want access to your Postgres Database you will need to get the credentials from Heroku:
 
