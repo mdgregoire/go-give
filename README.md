@@ -51,19 +51,86 @@ In Postico, create a "New Favorite" with "Host" set to ``localhost`` and "Port" 
 
 
 You will need to create and register a new application with Facebook.
-Go to <a href="https://developers.facebook.com">Facebook for Developers</a> and log in.
-From the 'My Apps' menu on the top right select 'add a new app'.
-Enter the information when prompted, and click 'Create App Id'.
-After that In the 'Facebook Login' box select 'Set Up'.
-Select 'Web'.
-Enter the sites Url and click continue.
-Hit next through the next 3 pages.
-Copy the App Id and paste it into your .env file.
-Select the main settings, then 'basic'. Click 'show secret', then copy and paste that into your .env file.
+- Go to <a href="https://developers.facebook.com">Facebook for Developers</a> and log in.
+- From the 'My Apps' menu on the top right select 'add a new app'.
+- Enter the information when prompted, and click 'Create App Id'.
+- After that In the 'Facebook Login' box select 'Set Up'.
+- Select 'Web'.
+- Enter the sites Url and click continue.
+- Hit next through the next 3 pages.
+- Copy the App Id and paste it into your .env file.
+- Select the main settings, then 'basic'. Click 'show secret', then copy and paste that into your .env file.
 
 You will need to provide Facebook with a Valid OAuth Redirect URI:
-for local development use 'https://localhost:4430/auth/facebook/callback'.
-For deployment replace 'localhost:4430' with the site domain.
+- for local development use 'https://localhost:4430/auth/facebook/callback'.
+- for deployment replace 'localhost:4430' with the site domain.
 
 You will need to provide Facebook with the domain of the site, do this in the basic settings, for local development use 'localhost:4430' for deployment use the site domain.
 Also, in the basic settings provide the site URL, again for local development use 'localhost:4430' and for deployment use the app domain.
+
+
+
+==========================================================================================
+Below are the directions for deploying to heroku:
+
+
+
+### Heroku Prerequisite
+
+1. Sign up for an account on [Heroku.com](https://www.heroku.com/)
+2. Install Heroku CLI by typing `brew install heroku` in Terminal
+3. Authenticate by typing `heroku login` in Terminal
+
+  > Note: Your project also needs to have a git repository.
+
+### Heroku Setup
+
+Run the following commands from within your project folder.
+
+1. In terminal, navigate to your project folder and type `heroku create`
+2. Login in if prompted
+3. Type `git remote -v` to ensure it added successfully
+4. In terminal, type `git push heroku master`
+5. Our website is now live! However... we also have a database
+
+### Postgresql on Heroku
+
+1. In terminal, type `heroku addons:create heroku-postgresql:hobby-dev` to set up Postgresql on your Heroku project
+2. Next, type `heroku pg:push gacrux-todo DATABASE_URL` to copy your co_giv database contents up to Heroku. **DATABASE\_URL is a heroku config variable created by the Add On. Do not replace it with something else, just type: DATABASE\_URL**
+
+If you want access to your Postgres Database you will need to get the credentials from Heroku:
+
+From the Overview Tab:
+- select 'Heroku Postgres' from the add-ons
+- select 'settings'
+- select 'View Credentials'
+-Copy the needed credentials into your Postico (or whichever DB software you choose)
+
+
+Next, commit your changes and push them to Heroku:
+
+```
+git add .
+git commit -m "MESSAGE"
+git push heroku master
+```
+
+Next you will need to take all of the variables from your .env file and input them into the heroku dashboard for your application.
+From the dashboard navigate to the 'Settings' tab and click 'Reveal Config Vars'.  In there should already be the DATABASE_URL from importing your database.  Add all of the CONFIG VARS. You will need to make the following change, set DEV to equal 'false'.
+
+Lastly, open terminal and type `heroku open`
+
+### Miscellaneous
+
+- `heroku logs` - Display error logs
+- `heroku config` - Show basic app info
+- `heroku restart` - Sometimes it helps to turn things off an on again
+- `heroku open` - Opens the website for you project in the browser
+- `git remote -v` - Shows your remotes
+
+## Resources
+
+More detailed instructions can be found here:
+
+- [https://devcenter.heroku.com/articles/git](https://devcenter.heroku.com/articles/git)
+- [https://devcenter.heroku.com/articles/heroku-postgresql](https://devcenter.heroku.com/articles/heroku-postgresql)
