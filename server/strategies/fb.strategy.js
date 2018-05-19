@@ -6,10 +6,10 @@ let debug = false;
 let cbUrl;
 if(process.env.DEV == 'true'){
   cbUrl = process.env.LOCALHOST_REDIRECT_URL
-  console.log(cbUrl);
+  console.log(cbUrl, 'LOCALHOST_REDIRECT_URL');
 } else {
   cbUrl = process.env.DEPLOY_REDIRECT_URL
-  console.log(cbUrl);
+  console.log(cbUrl, 'DEPLOY_REDIRECT_URL');
 }
 
 passport.use(new FacebookStrategy({
