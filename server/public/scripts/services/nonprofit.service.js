@@ -1,7 +1,7 @@
 myApp.service('NonprofitService', ['$http', '$location', '$route', '$mdDialog', '$window', function($http, $location, $route, $mdDialog, $window) {
 
   let self = this;
-  let debug = false;
+  let debug = true;
 
   self.newNonprofit = {};
   self.allNonprofits = {
