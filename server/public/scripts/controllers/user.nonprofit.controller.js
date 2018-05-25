@@ -1,14 +1,17 @@
-myApp.controller('UserNonprofitProfileController',['UserService', 'StripeService', '$routeParams', 'NonprofitService', '$window', '$mdDialog', '$scope',
-    function(UserService, StripeService, $routeParams, NonprofitService, $window, $mdDialog, $scope){
+myApp.controller('UserNonprofitProfileController',['UserService', '$routeParams', 'NonprofitService', '$window', '$mdDialog', '$scope',
+    function(UserService, $routeParams, NonprofitService, $window, $mdDialog, $scope){
 
     const self = this;
 
     self.UserService = UserService;
     self.NonprofitService = NonprofitService;
     self.nonprofitToDisplay = NonprofitService.nonprofitToDisplay;
+    self.displaySoloNonprofit = NonprofitService.displaySoloNonprofit;
+    self.displaySoloNonprofit($routeParams.id);
+
     self.checkStripeRegistration = UserService.checkStripeRegistration
     self.fbLogout = UserService.fbLogout;
-    NonprofitService.displaySoloNonprofit($routeParams.id)
+
 
     self.plan = UserService.plan;
     self.subscribeToThisPlan = UserService.subscribeToThisPlan;
@@ -16,7 +19,7 @@ myApp.controller('UserNonprofitProfileController',['UserService', 'StripeService
     self.oneTimeDonation = UserService.oneTimeDonation;
     self.oneTimeDonate = UserService.oneTimeDonate;
 
-    NonprofitService.getAllNonprofit();
+    self.NonprofitService.getAllNonprofit();
 
     self.showDonationDialog = function ($event) {
         $mdDialog.show({
